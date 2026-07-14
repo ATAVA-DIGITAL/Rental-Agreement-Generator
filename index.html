@@ -75,12 +75,14 @@
             background-color: #fff;
         }
 
-        /* Class for Page 1 and Page 2 Backgrounds */
+        /* ---------------------------------------------------
+           ONLINE BACKGROUND IMAGES (No local file needed)
+           --------------------------------------------------- */
         .page-one {
-            background-image: url('page1.png');
+            background-image: url('https://atavadigital.github.io/templates/Tenancy_Contract_01.jpg'), url('Tenancy Contract 01.jpg');
         }
         .page-two {
-            background-image: url('page2.png');
+            background-image: url('https://atavadigital.github.io/templates/Tenancy_Contract_02.jpg'), url('Tenancy Contract 02.jpg');
         }
 
         /* Standard Input Styling inside Document */
@@ -88,15 +90,16 @@
             position: absolute;
             border: none;
             background: transparent;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
             color: #1e3a8a;
             padding: 2px 5px;
             outline: none;
             width: 100%;
             height: 100%;
+            text-align: center;
         }
-        /* Highlight on focus for easy typing */
+        /* Focus style */
         .field-input:focus {
             background: rgba(56, 189, 248, 0.15);
         }
@@ -109,7 +112,7 @@
         }
 
         /* ===================================================
-           PAGE 1 INPUT COORDINATES (PERFECT ALIGNMENT)
+           PAGE 1 INPUT COORDINATES
            =================================================== */
         
         /* Tenant Info (Left side) */
@@ -152,10 +155,10 @@
 
 
         /* ===================================================
-           PAGE 2 INPUT COORDINATES (PERFECT ALIGNMENT)
+           PAGE 2 INPUT COORDINATES
            =================================================== */
         
-        /* Special Conditions - Lines 1 to 8 */
+        /* Special Conditions */
         #wrap-cond-line1 { top: 12.3%; left: 8.0%; width: 80.5%; height: 1.5%; }
         #wrap-cond-line2 { top: 14.3%; left: 8.0%; width: 80.5%; height: 1.5%; }
         #wrap-cond-line3 { top: 16.3%; left: 8.0%; width: 80.5%; height: 1.5%; }
@@ -165,8 +168,7 @@
         #wrap-cond-line7 { top: 24.3%; left: 8.0%; width: 80.5%; height: 1.5%; }
         #wrap-cond-line8 { top: 26.3%; left: 8.0%; width: 80.5%; height: 1.5%; }
 
-        /* Payment Table Columns Positioning (Row 1 to 6) */
-        /* Table Start Top: ~36.2%, Row spacing: ~4.1% */
+        /* Payment Table Rows */
         .pay-row-1 { top: 36.2%; }
         .pay-row-2 { top: 40.3%; }
         .pay-row-3 { top: 44.4%; }
@@ -174,20 +176,20 @@
         .pay-row-5 { top: 52.6%; }
         .pay-row-6 { top: 56.7%; }
 
-        /* Table Column Left and Width percentages */
+        /* Columns */
         .col-sig { left: 8.2%; width: 16.5%; height: 3.5%; }
         .col-date { left: 25.2%; width: 16.8%; height: 3.5%; }
         .col-recpt { left: 42.4%; width: 16.2%; height: 3.5%; }
         .col-cash { left: 59.0%; width: 16.6%; height: 3.5%; }
         .col-no { left: 76.0%; width: 16.4%; height: 3.5%; }
 
-        /* Dates for signature boxes */
+        /* Signature Dates */
         #wrap-sig-sec-date { top: 70.8%; left: 16.2%; width: 18.0%; height: 1.8%; }
         #wrap-sig-fst-date { top: 70.8%; left: 59.0%; width: 18.0%; height: 1.8%; }
 
 
         /* ===================================================
-           PRINT MEDIA STYLES - Crucial for Page breaks
+           PRINT STYLE
            =================================================== */
         @media print {
             body {
@@ -195,7 +197,7 @@
                 padding: 0;
             }
             .action-panel {
-                display: none; /* Hide top panel during printing */
+                display: none;
             }
             .agreement-container {
                 gap: 0;
@@ -207,17 +209,17 @@
                 height: 297mm;
             }
             .field-input {
-                color: #000 !important; /* Switch to crisp black text when printing */
+                color: #000 !important;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Instructions and Print Button (Hidden in Print) -->
+    <!-- Instructions and Print Button -->
     <div class="action-panel">
         <h2>ATAVA Digital Typing & Document Clearing</h2>
-        <p>ബ്ലൂ കളർ ബോക്സുകളിൽ ക്ലിക്ക് ചെയ്ത് ഇംഗ്ലീഷോ അറബിയോ നേരിട്ട് ടൈപ്പ് ചെയ്യുക. ലേഔട്ട് ഒട്ടും മാറില്ല.</p>
+        <p>Click on the blue colored boxes and type English or Arabic directly.</p>
         <button class="print-btn" onclick="window.print()">Print Agreement (PDF)</button>
     </div>
 
@@ -279,7 +281,7 @@
             <div class="box-wrapper" id="wrap-cond-line7"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-cond-line8"><input type="text" class="field-input"></div>
 
-            <!-- Payment Table Inputs (6 Rows) -->
+            <!-- Payment Table Inputs -->
             <!-- Row 1 -->
             <div class="box-wrapper pay-row-1 col-sig"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-1 col-date"><input type="text" class="field-input"></div>
