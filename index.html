@@ -75,14 +75,12 @@
             background-color: #fff;
         }
 
-        /* ---------------------------------------------------
-           ONLINE BACKGROUND IMAGES (No local file needed)
-           --------------------------------------------------- */
+        /* ONLINE BACKGROUND IMAGES */
         .page-one {
-            background-image: url('https://atavadigital.github.io/templates/Tenancy_Contract_01.jpg'), url('page1.jpg');
+            background-image: url('https://atavadigital.github.io/templates/Tenancy_Contract_01.jpg'), url('Tenancy Contract 01.jpg');
         }
         .page-two {
-            background-image: url('https://atavadigital.github.io/templates/Tenancy_Contract_02.jpg'), url('page2.jpg');
+            background-image: url('https://atavadigital.github.io/templates/Tenancy_Contract_02.jpg'), url('Tenancy Contract 02.jpg');
         }
 
         /* Standard Input Styling inside Document */
@@ -99,23 +97,17 @@
             height: 100%;
             text-align: center;
         }
-        /* Focus style */
         .field-input:focus {
             background: rgba(56, 189, 248, 0.15);
         }
 
-        /* Positioning Wrapper to match blue boxes precisely */
         .box-wrapper {
             position: absolute;
             display: flex;
             align-items: center;
         }
 
-        /* ===================================================
-           PAGE 1 INPUT COORDINATES
-           =================================================== */
-        
-        /* Tenant Info (Left side) */
+        /* PAGE 1 INPUT COORDINATES */
         #wrap-t-name { top: 18.2%; left: 17.5%; width: 25.5%; height: 1.8%; }
         #wrap-t-nat { top: 20.8%; left: 17.5%; width: 25.5%; height: 1.8%; }
         #wrap-t-id { top: 23.3%; left: 17.5%; width: 25.5%; height: 1.8%; }
@@ -123,7 +115,6 @@
         #wrap-t-pobox { top: 28.3%; left: 17.5%; width: 25.5%; height: 1.8%; }
         #wrap-t-email { top: 30.8%; left: 17.5%; width: 25.5%; height: 1.8%; }
 
-        /* Landlord Info (Right side) */
         #wrap-l-owner { top: 18.2%; left: 61.2%; width: 25.5%; height: 1.8%; }
         #wrap-l-landlord { top: 20.1%; left: 61.2%; width: 25.5%; height: 1.8%; }
         #wrap-l-nat { top: 23.3%; left: 61.2%; width: 25.5%; height: 1.8%; }
@@ -133,7 +124,6 @@
         #wrap-l-pobox { top: 33.3%; left: 61.2%; width: 25.5%; height: 1.8%; }
         #wrap-l-email { top: 35.8%; left: 61.2%; width: 25.5%; height: 1.8%; }
 
-        /* Lease Info (Left side - Lower) */
         #wrap-p-usage { top: 41.2%; left: 17.5%; width: 25.5%; height: 1.8%; }
         #wrap-p-dur { top: 43.8%; left: 17.5%; width: 25.5%; height: 1.8%; }
         #wrap-p-start { top: 46.8%; left: 17.5%; width: 25.5%; height: 1.8%; }
@@ -142,7 +132,6 @@
         #wrap-p-ins { top: 55.4%; left: 17.5%; width: 25.5%; height: 1.8%; }
         #wrap-p-area { top: 58.0%; left: 17.5%; width: 25.5%; height: 1.8%; }
 
-        /* Leased Property Info (Right side - Lower) */
         #wrap-r-area { top: 41.2%; left: 61.2%; width: 25.5%; height: 1.8%; }
         #wrap-r-unit { top: 43.8%; left: 61.2%; width: 25.5%; height: 1.8%; }
         #wrap-r-fewa { top: 46.8%; left: 61.2%; width: 25.5%; height: 1.8%; }
@@ -153,12 +142,7 @@
         #wrap-r-floor { top: 60.5%; left: 61.2%; width: 25.5%; height: 1.8%; }
         #wrap-r-land { top: 63.0%; left: 61.2%; width: 25.5%; height: 1.8%; }
 
-
-        /* ===================================================
-           PAGE 2 INPUT COORDINATES
-           =================================================== */
-        
-        /* Special Conditions */
+        /* PAGE 2 INPUT COORDINATES */
         #wrap-cond-line1 { top: 12.3%; left: 8.0%; width: 80.5%; height: 1.5%; }
         #wrap-cond-line2 { top: 14.3%; left: 8.0%; width: 80.5%; height: 1.5%; }
         #wrap-cond-line3 { top: 16.3%; left: 8.0%; width: 80.5%; height: 1.5%; }
@@ -168,7 +152,6 @@
         #wrap-cond-line7 { top: 24.3%; left: 8.0%; width: 80.5%; height: 1.5%; }
         #wrap-cond-line8 { top: 26.3%; left: 8.0%; width: 80.5%; height: 1.5%; }
 
-        /* Payment Table Rows */
         .pay-row-1 { top: 36.2%; }
         .pay-row-2 { top: 40.3%; }
         .pay-row-3 { top: 44.4%; }
@@ -176,25 +159,26 @@
         .pay-row-5 { top: 52.6%; }
         .pay-row-6 { top: 56.7%; }
 
-        /* Columns */
         .col-sig { left: 8.2%; width: 16.5%; height: 3.5%; }
         .col-date { left: 25.2%; width: 16.8%; height: 3.5%; }
         .col-recpt { left: 42.4%; width: 16.2%; height: 3.5%; }
         .col-cash { left: 59.0%; width: 16.6%; height: 3.5%; }
         .col-no { left: 76.0%; width: 16.4%; height: 3.5%; }
 
-        /* Signature Dates */
         #wrap-sig-sec-date { top: 70.8%; left: 16.2%; width: 18.0%; height: 1.8%; }
         #wrap-sig-fst-date { top: 70.8%; left: 59.0%; width: 18.0%; height: 1.8%; }
 
-
         /* ===================================================
-           PRINT STYLE
+           PRINT STYLE WITH ZERO MARGIN TO REMOVE HEADERS
            =================================================== */
         @media print {
+            @page {
+                margin: 0; /* Removing margins automatically hides browser headers/footers */
+            }
             body {
                 background-color: #fff;
                 padding: 0;
+                margin: 0;
             }
             .action-panel {
                 display: none;
@@ -216,7 +200,6 @@
 </head>
 <body>
 
-    <!-- Instructions and Print Button -->
     <div class="action-panel">
         <h2>ATAVA Digital Typing & Document Clearing</h2>
         <p>Click on the blue colored boxes and type English or Arabic directly.</p>
@@ -227,8 +210,6 @@
         
         <!-- PAGE 1 -->
         <div class="a4-page page-one">
-            
-            <!-- Tenant Info Inputs -->
             <div class="box-wrapper" id="wrap-t-name"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-t-nat"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-t-id"><input type="text" class="field-input"></div>
@@ -236,7 +217,6 @@
             <div class="box-wrapper" id="wrap-t-pobox"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-t-email"><input type="text" class="field-input"></div>
 
-            <!-- Landlord Info Inputs -->
             <div class="box-wrapper" id="wrap-l-owner"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-l-landlord"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-l-nat"><input type="text" class="field-input"></div>
@@ -246,7 +226,6 @@
             <div class="box-wrapper" id="wrap-l-pobox"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-l-email"><input type="text" class="field-input"></div>
 
-            <!-- Lease Info Inputs -->
             <div class="box-wrapper" id="wrap-p-usage"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-p-dur"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-p-start"><input type="text" class="field-input"></div>
@@ -255,7 +234,6 @@
             <div class="box-wrapper" id="wrap-p-ins"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-p-area"><input type="text" class="field-input"></div>
 
-            <!-- Leased Property Info Inputs -->
             <div class="box-wrapper" id="wrap-r-area"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-r-unit"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-r-fewa"><input type="text" class="field-input"></div>
@@ -265,13 +243,10 @@
             <div class="box-wrapper" id="wrap-r-desc"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-r-floor"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-r-land"><input type="text" class="field-input"></div>
-
         </div>
 
         <!-- PAGE 2 -->
         <div class="a4-page page-two">
-            
-            <!-- Special Conditions Lines -->
             <div class="box-wrapper" id="wrap-cond-line1"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-cond-line2"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-cond-line3"><input type="text" class="field-input"></div>
@@ -281,53 +256,50 @@
             <div class="box-wrapper" id="wrap-cond-line7"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-cond-line8"><input type="text" class="field-input"></div>
 
-            <!-- Payment Table Inputs -->
-            <!-- Row 1 -->
+            <!-- Table Row 1 -->
             <div class="box-wrapper pay-row-1 col-sig"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-1 col-date"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-1 col-recpt"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-1 col-cash"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-1 col-no"><input type="text" class="field-input"></div>
 
-            <!-- Row 2 -->
+            <!-- Table Row 2 -->
             <div class="box-wrapper pay-row-2 col-sig"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-2 col-date"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-2 col-recpt"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-2 col-cash"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-2 col-no"><input type="text" class="field-input"></div>
 
-            <!-- Row 3 -->
+            <!-- Table Row 3 -->
             <div class="box-wrapper pay-row-3 col-sig"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-3 col-date"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-3 col-recpt"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-3 col-cash"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-3 col-no"><input type="text" class="field-input"></div>
 
-            <!-- Row 4 -->
+            <!-- Table Row 4 -->
             <div class="box-wrapper pay-row-4 col-sig"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-4 col-date"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-4 col-recpt"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-4 col-cash"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-4 col-no"><input type="text" class="field-input"></div>
 
-            <!-- Row 5 -->
+            <!-- Table Row 5 -->
             <div class="box-wrapper pay-row-5 col-sig"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-5 col-date"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-5 col-recpt"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-5 col-cash"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-5 col-no"><input type="text" class="field-input"></div>
 
-            <!-- Row 6 -->
+            <!-- Table Row 6 -->
             <div class="box-wrapper pay-row-6 col-sig"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-6 col-date"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-6 col-recpt"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-6 col-cash"><input type="text" class="field-input"></div>
             <div class="box-wrapper pay-row-6 col-no"><input type="text" class="field-input"></div>
 
-            <!-- Signature Dates -->
             <div class="box-wrapper" id="wrap-sig-sec-date"><input type="text" class="field-input"></div>
             <div class="box-wrapper" id="wrap-sig-fst-date"><input type="text" class="field-input"></div>
-
         </div>
 
     </div>
