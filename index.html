@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATAVA Rental Agreement Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #064e3b;
+            --accent: #b45309;
+            --bg-gray: #f3f4f6;
+            --border-color: #cbd5e1;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-gray); color: #1e293b; padding: 20px; font-size: 14px; }
+
+        /* Input Form Container (This will be hidden during printing) */
+        .form-container {
+            max-width: 1000px;
+            margin: 0 auto 30px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-top: 5px solid var(--primary);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+        }
+        .form-header h2 { color: var(--primary); font-size: 1.8rem; margin-bottom: 5px; }
+        .form-header p { color: #64748b; font-size: 1rem; }
+
+        .form-section-title {
+            font-size: 1.1rem;
+            color: var(--accent);
+            margin: 20px 0 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .input-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #475569;
+        }
+        .input-group input, .input-group select {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        .input-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(6, 78, 59, 0.15);
+        }
+
+        .print-btn-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .print-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(6, 78, 59, 0.3);
+            transition: 0.2s;
+        }
+        .print-btn:hover {
+            background: #043e2f;
+            transform: translateY(-2px);
+        }
+
+        /* -----------------------------------------
+           AGREEMENT PREVIEW STYLES (Looks exactly like the PDF)
+           ----------------------------------------- */
+        .agreement-paper {
+            width: 210mm; /* A4 Width */
+            min-height: 297mm; /* A4 Height */
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20mm 15mm;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border: 1px solid #cbd5e1;
+            position: relative;
+            color: #000;
+        }
+
+        /* Top Bar Header Logos */
+        .aq-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .aq-header img {
+            height: 55px;
+            object-fit: contain;
+        }
+        .aq-header-text {
+            text-align: center;
+            font-weight: bold;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .main-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .main-title h1 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        .main-title h2 {
+            font-size: 14px;
+            font-weight: normal;
+            color: #333;
+        }
+
+        /* Section Block Style */
+        .section-block {
+            border: 1px solid #000;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .section-title {
+            background-color: #f1f5f9;
+            padding: 6px 10px;
+            font-weight: bold;
+            font-size: 12px;
+            border-bottom: 1px solid #000;
+            display: flex;
+            justify-content: space-between;
+            direction: rtl; /* Arabic right, English left */
+        }
+        .section-title span {
+            direction: ltr;
+        }
+
+        .section-content {
+            padding: 8px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 15px;
+        }
+
+        /* Data Row inside content */
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            border-bottom: 1px dotted #ccc;
+            padding-bottom: 3px;
+        }
+        .data-row:last-child {
+            border-bottom: none;
+        }
+        .label-eng { font-weight: 600; text-align: left; }
+        .label-ara { text-align: right; font-weight: bold; }
+        .value-field {
+            font-weight: bold;
+            color: #1e3a8a; /* Blue tint for entered data to distinguish */
+            text-align: center;
+            flex-grow: 1;
+            padding: 0 5px;
+        }
+
+        /* 3 Column Layout for specific rows */
+        .grid-3col {
+            grid-template-columns: 1fr 1fr 1fr !important;
+        }
+
+        /* Legal Statement Box */
+        .legal-box {
+            font-size: 10px;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            padding: 8px;
+            border: 1px solid #000;
+            background: #fafafa;
+            border-radius: 4px;
+        }
+        .legal-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .legal-split p {
+            text-align: justify;
+        }
+        .legal-split p.ara {
+            direction: rtl;
+            text-align: justify;
+        }
+
+        /* General Conditions Grid */
+        .conditions-list {
+            font-size: 9.5px;
+            line-height: 1.3;
+        }
+        .cond-row {
+            display: grid;
+            grid-template-columns: 3% 47% 47% 3%;
+            gap: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 5px 0;
+            align-items: center;
+        }
+        .cond-row:last-child {
+            border-bottom: none;
+        }
+        .cond-row .ara {
+            direction: rtl;
+            text-align: justify;
+        }
+        .cond-row .eng {
+            text-align: justify;
+        }
+
+        /* Payment Table */
+        .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            margin-top: 10px;
+            border: 1px solid #000;
+        }
+        .payment-table th, .payment-table td {
+            border: 1px solid #000;
+            padding: 4px;
+            text-align: center;
+        }
+        .payment-table th {
+            background-color: #f1f5f9;
+            font-weight: bold;
+        }
+
+        /* Signatures Section */
+        .sig-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 15px;
+            font-size: 11px;
+        }
+        .sig-box {
+            border: 1px solid #000;
+            padding: 8px;
+            border-radius: 4px;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .sig-title {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+
+        /* Footer Text */
+        .agreement-footer {
+            margin-top: 15px;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 8px;
+            color: #555;
+        }
+
+        /* PRINT MEDIA STYLES - Crucial for perfect Alignment */
+        @media print {
+            body {
+                background-color: #ffffff;
+                padding: 0;
+                color: #000;
+            }
+            .form-container {
+                display: none; /* Hides the edit form in print output */
+            }
+            .agreement-paper {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                margin: 0;
+                width: 100%;
+                min-height: unset;
+            }
+            .value-field {
+                color: #000 !important; /* Forces black text in print */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- EDIT FORM (Hidden on print) -->
+    <div class="form-container">
+        <div class="form-header">
+            <h2><i class="fa-solid fa-file-signature"></i> ATAVA Room Agreement Maker</h2>
+            <p>വിവരങ്ങൾ ടൈപ്പ് ചെയ്യുമ്പോൾ താഴെ യാന്ത്രികമായി അപ്‌ഡേറ്റ് ആകും. ശേഷം പ്രിന്റ് ചെയ്യാം.</p>
+        </div>
+
+        <!-- 1. TENANT INFO -->
+        <div class="form-section-title"><i class="fa-solid fa-user"></i> 1. Tenant Info (വാടകക്കാരന്റെ വിവരങ്ങൾ)</div>
+        <div class="grid-inputs">
+            <div class="input-group">
+                <label>Tenant Name / പേര്</label>
+                <input type="text" id="in_t_name" value="عبدالفاھب خورشید خان خورشید جیمنا خان" oninput="updateField('t_name', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Nationality / രാജ്യം</label>
+                <input type="text" id="in_t_nat" value="الھند" oninput="updateField('t_nat', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Emirates ID / ഐഡി നമ്പർ</label>
+                <input type="text" id="in_t_id" value="784198892102132" oninput="updateField('t_id', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Phone / ഫോൺ നമ്പർ</label>
+                <input type="text" id="in_t_phone" value="0563648212" oninput="updateField('t_phone', this.value)">
+            </div>
+            <div class="input-group">
+                <label>P.O. Box</label>
+                <input type="text" id="in_t_pobox" value="50" oninput="updateField('t_pobox', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Email</label>
+                <input type="text" id="in_t_email" value="wahabkassar6@gmail.com" oninput="updateField('t_email', this.value)">
+            </div>
+        </div>
+
+        <!-- 2. LANDLORD INFO -->
+        <div class="form-section-title"><i class="fa-solid fa-hotel"></i> 2. Landlord Info (കെട്ടിട ഉടമയുടെ വിവരങ്ങൾ)</div>
+        <div class="grid-inputs">
+            <div class="input-group">
+                <label>Owner Name / ഉടമസ്ഥൻ</label>
+                <input type="text" id="in_l_owner" value="سعید علي عبدالله مصبح بن ربیعة ال علي" oninput="updateField('l_owner', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Landlord Name / ലൈസൻസ് പേര്</label>
+                <input type="text" id="in_l_landlord" value="سعید علي عبدالله مصبح بن ربیعة ال علي" oninput="updateField('l_landlord', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Nationality / രാജ്യം</label>
+                <input type="text" id="in_l_nat" value="Ε΍έΎϣϻ΍" oninput="updateField('l_nat', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Emirates ID / ഐഡി നമ്പർ</label>
+                <input type="text" id="in_l_id" value="784195629025420" oninput="updateField('l_id', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Address / വിലാസം</label>
+                <input type="text" id="in_l_addr" value="ام القیوین" oninput="updateField('l_addr', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Phone / ഫോൺ</label>
+                <input type="text" id="in_l_phone" value="0506311777" oninput="updateField('l_phone', this.value)">
+            </div>
+            <div class="input-group">
+                <label>P.O. Box</label>
+                <input type="text" id="in_l_pobox" value="65-0" oninput="updateField('l_pobox', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Email</label>
+                <input type="text" id="in_l_email" value="wahabkassar6@gmail.com" oninput="updateField('l_email', this.value)">
+            </div>
+        </div>
+
+        <!-- 3. LEASE INFO -->
+        <div class="form-section-title"><i class="fa-solid fa-calendar-days"></i> 3. Lease Info (വാടക കരാർ കാലയളവ്)</div>
+        <div class="grid-inputs">
+            <div class="input-group">
+                <label>Usage Purpose / ഉദ്ദേശ്യം</label>
+                <input type="text" id="in_p_usage" value="ϲϧϛγ" oninput="updateField('p_usage', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Rent Duration / കാലയളവ്</label>
+                <input type="text" id="in_p_dur" value="1Δϧγ" oninput="updateField('p_dur', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Start Date / ആരംഭം</label>
+                <input type="text" id="in_p_start" value="01/05/2026" oninput="updateField('p_start', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Expiry Date / അവസാനം</label>
+                <input type="text" id="in_p_expiry" value="30/04/2027" oninput="updateField('p_expiry', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Rent Amount / വാടക തുക</label>
+                <input type="text" id="in_p_rent" value="AED 18,000.00" oninput="updateField('p_rent', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Insurance / ഇൻഷുറൻസ് തുക</label>
+                <input type="text" id="in_p_ins" value="02" oninput="updateField('p_ins', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Area / വിസ്തീർണം</label>
+                <input type="text" id="in_p_area" value="" oninput="updateField('p_area', this.value)">
+            </div>
+        </div>
+
+        <!-- 4. PROPERTY LEASED INFO -->
+        <div class="form-section-title"><i class="fa-solid fa-house-chimney"></i> 4. Property Leased Info (ഫ്ലാറ്റിന്റെ വിവരങ്ങൾ)</div>
+        <div class="grid-inputs">
+            <div class="input-group">
+                <label>Area Region / ഏരിയ</label>
+                <input type="text" id="in_r_area" value="مدینة أم القیوین/المقطع 2" oninput="updateField('r_area', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Unit No / റൂം നമ്പർ</label>
+                <input type="text" id="in_r_unit" value="No. 7" oninput="updateField('r_unit', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Fewa Account No / കറന്റ് അക്കൗണ്ട്</label>
+                <input type="text" id="in_r_fewa" value="" oninput="updateField('r_fewa', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Address / വിലാസം</label>
+                <input type="text" id="in_r_address" value="ϥϳϭϳϘϟ΍ϡ΍" oninput="updateField('r_address', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Property Type / ഫ്ലാറ്റ് ടൈപ്പ്</label>
+                <input type="text" id="in_r_type" value="Flat" oninput="updateField('r_type', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Building Name / കെട്ടിടത്തിന്റെ പേര്</label>
+                <input type="text" id="in_r_bname" value="AL NEMA" oninput="updateField('r_bname', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Description / വിവരണം</label>
+                <input type="text" id="in_r_desc" value="2 bed rooms+hall" oninput="updateField('r_desc', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Floor No / എത്രാം നില</label>
+                <input type="text" id="in_r_floor" value="" oninput="updateField('r_floor', this.value)">
+            </div>
+            <div class="input-group">
+                <label>Land No</label>
+                <input type="text" id="in_r_land" value="" oninput="updateField('r_land', this.value)">
+            </div>
+        </div>
+
+        <div class="print-btn-container">
+            <button class="print-btn" onclick="window.print()">
+                <i class="fa-solid fa-print"></i> Print Agreement / Save as PDF
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ================= AGREEMENT PAPER (A4 PREVIEW) ================= -->
+    <div class="agreement-paper">
+        
+        <!-- Municipality Header logos[cite: 4] -->
+        <div class="aq-header">
+            <!-- Left Logo Placeholder -->
+            <div style="width: 100px; font-size: 8px; border: 1px dashed #ccc; text-align:center; padding:5px;">
+                Government Logo
+            </div>
+            <div class="aq-header-text">
+                دولة الإمارات العربية المتحدة<br>
+                إمارة أم القيوين<br>
+                بلدية أم القيوين<br>
+                Umm Al Quwain Municipality
+            </div>
+            <!-- Right Logo Placeholder -->
+            <div style="width: 100px; font-size: 8px; border: 1px dashed #ccc; text-align:center; padding:5px;">
+                Municipality Logo
+            </div>
+        </div>
+
+        <!-- Title[cite: 4] -->
+        <div class="main-title">
+            <h1>عقد إيجار مبدئي</h1>
+            <h2>INITIAL RENTAL CONTRACT</h2>
+        </div>
+
+        <!-- 1. TENANT INFO BLOCK[cite: 4] -->
+        <div class="section-block">
+            <div class="section-title">
+                بيانات المستأجر
+                <span>Info Tenant</span>
+            </div>
+            <div class="section-content">
+                <div class="data-row">
+                    <span class="label-eng">Name Tenant</span>
+                    <span class="value-field" id="t_name">عبدالفاھب خورشید خان خورشید جیمنا خان</span>
+                    <span class="label-ara">اسم المستأجر</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Nationality</span>
+                    <span class="value-field" id="t_nat">الھند</span>
+                    <span class="label-ara">الجنسية</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">ID Emirates</span>
+                    <span class="value-field" id="t_id">784198892102132</span>
+                    <span class="label-ara">رقم بطاقة الهوية</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Phone</span>
+                    <span class="value-field" id="t_phone">0563648212</span>
+                    <span class="label-ara">الهاتف</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">P.O. Box</span>
+                    <span class="value-field" id="t_pobox">50</span>
+                    <span class="label-ara">صندوق البريد</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Email</span>
+                    <span class="value-field" id="t_email">wahabkassar6@gmail.com</span>
+                    <span class="label-ara">البريد الإلكتروني</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. LANDLORD INFO BLOCK[cite: 4] -->
+        <div class="section-block">
+            <div class="section-title">
+                بيانات المؤجر
+                <span>Info Landlord</span>
+            </div>
+            <div class="section-content">
+                <div class="data-row">
+                    <span class="label-eng">Name Owner</span>
+                    <span class="value-field" id="l_owner">سعید علي عبدالله مصبح بن ربیعة ال علي</span>
+                    <span class="label-ara">اسم المالك</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Name of Landlord</span>
+                    <span class="value-field" id="l_landlord">سعید علي عبدالله مصبح بن ربیعة ال علي</span>
+                    <span class="label-ara">اسم المؤجر</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Nationality</span>
+                    <span class="value-field" id="l_nat">Ε΍έΎϣϻ΍</span>
+                    <span class="label-ara">الجنسية</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">ID Emirates</span>
+                    <span class="value-field" id="l_id">784195629025420</span>
+                    <span class="label-ara">رقم بطاقة الهوية</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Address</span>
+                    <span class="value-field" id="l_addr">ام القیوین</span>
+                    <span class="label-ara">العنوان</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Phone</span>
+                    <span class="value-field" id="l_phone">0506311777</span>
+                    <span class="label-ara">الهاتف</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">P.O Box</span>
+                    <span class="value-field" id="l_pobox">65-0</span>
+                    <span class="label-ara">صندوق البريد</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Email</span>
+                    <span class="value-field" id="l_email">wahabkassar6@gmail.com</span>
+                    <span class="label-ara">البريد الإلكتروني</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. LEASE INFO BLOCK[cite: 4] -->
+        <div class="section-block">
+            <div class="section-title">
+                بيانات الإيجار
+                <span>Info Lease</span>
+            </div>
+            <div class="section-content grid-3col">
+                <div class="data-row">
+                    <span class="label-eng">Purpose of Usage</span>
+                    <span class="value-field" id="p_usage">ϲϧϛγ</span>
+                    <span class="label-ara">الغرض من الإيجار</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Rent Duration</span>
+                    <span class="value-field" id="p_dur">1Δϧγ</span>
+                    <span class="label-ara">مدة الإيجار</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Date of Tenancy</span>
+                    <span class="value-field" id="p_start">01/05/2026</span>
+                    <span class="label-ara">بداية تاريخ عقد</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Date of Expiry</span>
+                    <span class="value-field" id="p_expiry">30/04/2027</span>
+                    <span class="label-ara">نهاية تاريخ عقد</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Rent Amount</span>
+                    <span class="value-field" id="p_rent">AED 18,000.00</span>
+                    <span class="label-ara">قيمة عقد الإيجار</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Insurance Amount</span>
+                    <span class="value-field" id="p_ins">02</span>
+                    <span class="label-ara">مبلغ التأمين</span>
+                </div>
+                <div class="data-row" style="grid-column: span 3; border-bottom:none;">
+                    <span class="label-eng">Property Area</span>
+                    <span class="value-field" id="p_area" style="border-bottom: 1px dotted #ccc;">-</span>
+                    <span class="label-ara">مساحة العقار M.Sq</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. PROPERTY LEASED BLOCK[cite: 4] -->
+        <div class="section-block">
+            <div class="section-title">
+                بيانات العين المؤجرة
+                <span>Info Property Leased</span>
+            </div>
+            <div class="section-content">
+                <div class="data-row">
+                    <span class="label-eng">Area</span>
+                    <span class="value-field" id="r_area">مدینة أم القیوین/المقطع 2</span>
+                    <span class="label-ara">المنطقة</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Property Unit No.</span>
+                    <span class="value-field" id="r_unit">No. 7</span>
+                    <span class="label-ara">رقم الوحدة العقارية</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Fewa Account No</span>
+                    <span class="value-field" id="r_fewa">-</span>
+                    <span class="label-ara">رقم حساب الكهرباء</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Address</span>
+                    <span class="value-field" id="r_address">ϥϳϭϳϘϟ΍ϡ΍</span>
+                    <span class="label-ara">العنوان</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Property Type</span>
+                    <span class="value-field" id="r_type">Flat</span>
+                    <span class="label-ara">نوع العقار</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Name Building</span>
+                    <span class="value-field" id="r_bname">AL NEMA</span>
+                    <span class="label-ara">اسم المبنى</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Property Description</span>
+                    <span class="value-field" id="r_desc">2 bed rooms+hall</span>
+                    <span class="label-ara">وصف العقار</span>
+                </div>
+                <div class="data-row">
+                    <span class="label-eng">Floor No.</span>
+                    <span class="value-field" id="r_floor">-</span>
+                    <span class="label-ara">رقم الطابق</span>
+                </div>
+                <div class="data-row" style="grid-column: span 2; border-bottom: none;">
+                    <span class="label-eng">Land No.</span>
+                    <span class="value-field" id="r_land" style="border-bottom: 1px dotted #ccc;">-</span>
+                    <span class="label-ara">رقم الارض</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legal Statement[cite: 4] -->
+        <div class="legal-box">
+            <div class="legal-split">
+                <p class="eng">
+                    The Landlord hereby agrees to rent property described herein above for the prescribed period to the Tenant in accordance with the following conditions: The above preamble is deemed as an integral part of terms hereof. The Parties hereto hereby acknowledge that they have read the Provisions of Law No. (3) Of 2008 which regulates the relationship between Landlords and Tenants in the Emirates of Umm Al Quwain and they hereby accepts to comply with all obligations of the Landlord and Tenant Prescribed by the Law.
+                </p>
+                <p class="ara">
+                    بموجب هذا العقد يوافق المؤجر على تأجير العقار الموصوف أعلاه وللمدة المحددة أعلاه للمستأجر وذلك حسب الشروط التالية: تعتبر البيانات الواردة أعلاه بمثابة أنها جزءا لا يتجزأ من أحكام هذ العقد. يقر الطرفان بأنهما قد أطلعا على أحكام القانون رقم (3) لسنة 2008 بشأن تنظيم العلاقة بين مؤجري ومستأجري العقارات في إمارة أم القيوين وأنهما وبموجب هذا العقد يقبلان صراحة التقيد التام بالالتزمات التي قررها القانون المذكور على كل من المؤجر والمستأجر.
+                </p>
+            </div>
+        </div>
+
+        <!-- General Conditions (Conditions of Contract)[cite: 4] -->
+        <div class="section-block">
+            <div class="section-title">
+                شروط العقد العامة
+                <span>Conditions of Contract</span>
+            </div>
+            <div class="conditions-list" style="padding: 5px;">
+                <!-- Row 1 -->
+                <div class="cond-row">
+                    <span class="num">1</span>
+                    <span class="eng">The Tenant hereby admits to have inspected the leased property and has accepted in its present condition.</span>
+                    <span class="ara">بموجب هذا العقد يقر الطرف الثاني بانة قد قام بمعاينة العقار المؤجر وانه قد قبله بحالته الراهنة.</span>
+                    <span class="num">1</span>
+                </div>
+                <!-- Row 2 -->
+                <div class="cond-row">
+                    <span class="num">2</span>
+                    <span class="eng">The Tenant shall not modify or demolish any part of the leased property or sublease the same without the prior written consent of The Landlord and shall not, on the Expiry of the Contract or the termination thereof, remove a construction made expect with prior written consent of the Landlord.</span>
+                    <span class="ara">لا يجوز للمستأجر إدخال أي تعديلات أو هدم أي جزء من العقار المؤجر أو التنازل من ايجاره، دون حصوله على موافقة مسبقة و خطية من المؤجر و يتعهد المستأجر بانه لن يقوم عند انقضاء مدة هذا العقد او انهائه بازالة اية مباني تم انشاؤها في العقار المؤجر الا بعد الحصول على موافقه خطية مسبقة من المؤجر.</span>
+                    <span class="num">2</span>
+                </div>
+                <!-- Row 3 -->
+                <div class="cond-row">
+                    <span class="num">3</span>
+                    <span class="eng">The Tenant hereby undertakes to pay the cost of his consumption of electricity, water, telephone, fax, telex, Bills, etc.</span>
+                    <span class="ara">يتعهد المستأجر بتسديد جميع رسوم و تكاليف استهلاكه من الكهرباء و الماء و استعمال الهاتف/الفاكس/التلكس.. و غيره.</span>
+                    <span class="num">3</span>
+                </div>
+                <!-- Row 4 -->
+                <div class="cond-row">
+                    <span class="num">4</span>
+                    <span class="eng">In case any issue is not expressly provided for in the special conditions hereof, or in the provision of the Leasing Law, the same shall be Resolved under the general provisions of the U.A.E. Code of Civil Transactions.</span>
+                    <span class="ara">في حالة نشوء أي مسألة لم يتم النص عليها صراحة ضمن الشروط الخاصة في هذا العقد أو ضمن احكام قانون الايجارات فتطبق بشأنها احكام النصوص العامة في قانون المعاملات المدينة الساري المفعول في الدولة.</span>
+                    <span class="num">4</span>
+                </div>
+                <!-- Row 5 -->
+                <div class="cond-row">
+                    <span class="num">5</span>
+                    <span class="eng">The lessor and the lessee is committed to the laws and regulations issued thereon hind buildings to fall and places permitted housing demolition workers.</span>
+                    <span class="ara">يلتزم المؤجر و المستأجر بالقوانين والانظمة الصادر بشأنها هدم المباني الآيلة للسقوط و الأماكن المسموح بها سكن عمال.</span>
+                    <span class="num">5</span>
+                </div>
+                <!-- Row 6 -->
+                <div class="cond-row" style="border-bottom:none;">
+                    <span class="num">6</span>
+                    <span class="eng">Any notice to renew the contract or not wanting to renew or request to increase the allowance or decreased must be three months from the date of the end of the existing lease contract before and only take it if it was not.</span>
+                    <span class="ara">أي إخطار بتجديد العقد أو عدم الرغبة في تجديده أو طلب زيادة البدل أو القاصه لابد و أن يتم قبل ثلاثة أشهر من تاريخ انتهاء عقد الايجار القائم والا اعتبر كان لم يكن.</span>
+                    <span class="num">6</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Special Conditions Section[cite: 4] -->
+        <div class="section-block">
+            <div class="section-title">
+                شروط العقد الخاصة وبيان الدفعات
+                <span>Special Conditions & Payments Info</span>
+            </div>
+            
+            <!-- Payment Table Template[cite: 4] -->
+            <table class="payment-table">
+                <thead>
+                    <tr>
+                        <th>الرقم / No</th>
+                        <th>نقدا أو شيك / Cash or Cheque</th>
+                        <th>رقم الايصال / Receipt No</th>
+                        <th>التاريخ / Date</th>
+                        <th>التوقيع بالاستلام / Signature</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td>2</td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td>3</td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td>4</td><td></td><td></td><td></td><td></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Signatures[cite: 4] -->
+        <div class="sig-section">
+            <div class="sig-box">
+                <div class="sig-title">
+                    <span>Signature of Second Party</span>
+                    <span>توقيع الطرف الثاني (المستأجر / Tenant)</span>
+                </div>
+                <div style="text-align: right; font-size: 10px;">التاريخ / Date: .........................</div>
+            </div>
+            <div class="sig-box">
+                <div class="sig-title">
+                    <span>Signature of First Party</span>
+                    <span>توقيع الطرف الأول (المؤجر / Owner)</span>
+                </div>
+                <div style="text-align: right; font-size: 10px;">التاريخ / Date: .........................</div>
+            </div>
+        </div>
+
+        <!-- Footer Contact Info[cite: 4] -->
+        <div class="agreement-footer">
+            <span>Umm Al Quwain, UAE | Tel: 06 7656145 | Fax: 06 7655138 | P.O. Box: 12</span>
+            <span>بلدية أم القيوين هاتف: 067656145 فاكس: 067655138 ص.ب: 12</span>
+        </div>
+    </div>
+
+    <!-- Live JS to dynamically handle values[cite: 4] -->
+    <script>
+        function updateField(targetId, value) {
+            // If the field is empty, put a dash so layout doesn't break
+            document.getElementById(targetId).innerText = value.trim() === "" ? "-" : value;
+        }
+    </script>
+</body>
+</html>
