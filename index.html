@@ -84,8 +84,11 @@
             background-position: center;
             box-shadow: 0 0 15px rgba(0,0,0,0.5);
             background-color: #fff;
+            
+            /* Enhanced screen display clarity */
             image-rendering: -webkit-optimize-contrast;
             image-rendering: crisp-edges;
+            filter: contrast(105%) brightness(98%);
         }
 
         /* ONLINE BACKGROUND IMAGES */
@@ -102,7 +105,7 @@
             border: none;
             background: transparent;
             font-family: 'Amiri', 'Traditional Arabic', Arial, sans-serif;
-            font-size: 11px;
+            font-size: 13px; /* Default normal size */
             font-weight: bold;
             color: #000000;
             padding: 0 4px;
@@ -111,6 +114,8 @@
             height: 100%;
             text-align: center;
             direction: rtl;
+            white-space: nowrap;
+            overflow: hidden;
         }
         .field-input:focus {
             background: rgba(56, 189, 248, 0.25);
@@ -121,6 +126,7 @@
             position: absolute;
             display: flex;
             align-items: center;
+            overflow: hidden;
         }
 
         /* PAGE 1 INPUT COORDINATES */
@@ -133,11 +139,6 @@
 
         #wrap-l-owner { top: 18.2%; left: 61.2%; width: 25.5%; height: 1.8%; }
         #wrap-l-landlord { top: 20.1%; left: 61.2%; width: 25.5%; height: 1.8%; }
-        #wrap-l-owner .field-input, 
-        #wrap-l-landlord .field-input {
-            font-size: 10px;
-        }
-
         #wrap-l-nat { top: 23.3%; left: 61.2%; width: 25.5%; height: 1.8%; }
         #wrap-l-id { top: 25.8%; left: 61.2%; width: 25.5%; height: 1.8%; }
         #wrap-l-addr { top: 28.3%; left: 61.2%; width: 25.5%; height: 1.8%; }
@@ -210,6 +211,7 @@
                 page-break-after: always;
                 width: 210mm;
                 height: 297mm;
+                filter: none !important;
             }
             .field-input {
                 color: #000 !important;
@@ -222,7 +224,7 @@
 
     <div class="action-panel">
         <h2>ATAVA DIGITAL SERVICES & TRADING</h2>
-        <p>Click inside any text box, then use the buttons to resize its font individually.</p>
+        <p>Text sizes will shrink automatically if name exceeds box size. Use buttons for manual fine-tuning.</p>
         <div class="btn-container">
             <button class="font-btn" onclick="adjustFontSize(-1)">A- Selected Font Smaller</button>
             <button class="font-btn" onclick="adjustFontSize(1)">A+ Selected Font Larger</button>
@@ -331,22 +333,40 @@
     <script>
         let activeInput = null;
 
-        // Track active/focused input box
-        document.addEventListener('focusin', function(e) {
-            if (e.target.classList.contains('field-input')) {
-                activeInput = e.target;
-            }
+        // Auto Font Auto-fit Logic on Typing
+        document.querySelectorAll('.field-input').forEach(input => {
+            input.addEventListener('input', function() {
+                autoFitFont(this);
+            });
+            
+            input.addEventListener('focus', function() {
+                activeInput = this;
+            });
         });
+
+        function autoFitFont(el) {
+            let maxFont = 13; // Normal default font size
+            let minFont = 7;
+            let currentSize = maxFont;
+
+            el.style.fontSize = currentSize + 'px';
+
+            // Shrink font size if text overflows box width
+            while (el.scrollWidth > el.clientWidth && currentSize > minFont) {
+                currentSize -= 0.5;
+                el.style.fontSize = currentSize + 'px';
+            }
+        }
 
         function adjustFontSize(change) {
             if (activeInput) {
                 const currentSize = parseFloat(window.getComputedStyle(activeInput).fontSize);
                 const newSize = currentSize + change;
-                if (newSize >= 8 && newSize <= 24) {
+                if (newSize >= 6 && newSize <= 24) {
                     activeInput.style.fontSize = newSize + 'px';
                 }
             } else {
-                alert("Please click inside a text box first to select it.");
+                alert("ദയവായി ആദ്യം ഏതെങ്കിലും ഒരു ബോക്സിൽ ക്ലിക്ക് ചെയ്യുക.");
             }
         }
     </script>
