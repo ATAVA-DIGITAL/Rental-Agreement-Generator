@@ -84,6 +84,8 @@
             background-position: center;
             box-shadow: 0 0 15px rgba(0,0,0,0.5);
             background-color: #fff;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
         }
 
         /* ONLINE BACKGROUND IMAGES */
@@ -111,7 +113,8 @@
             direction: rtl;
         }
         .field-input:focus {
-            background: rgba(56, 189, 248, 0.15);
+            background: rgba(56, 189, 248, 0.25);
+            border: 1px dashed #0284c7;
         }
 
         .box-wrapper {
@@ -128,13 +131,11 @@
         #wrap-t-pobox { top: 28.3%; left: 17.5%; width: 25.5%; height: 1.8%; }
         #wrap-t-email { top: 30.8%; left: 17.5%; width: 25.5%; height: 1.8%; }
 
-        /* Specific fix for top two landlord rows to ensure long names fit nicely */
         #wrap-l-owner { top: 18.2%; left: 61.2%; width: 25.5%; height: 1.8%; }
         #wrap-l-landlord { top: 20.1%; left: 61.2%; width: 25.5%; height: 1.8%; }
         #wrap-l-owner .field-input, 
         #wrap-l-landlord .field-input {
             font-size: 10px;
-            letter-spacing: -0.2px;
         }
 
         #wrap-l-nat { top: 23.3%; left: 61.2%; width: 25.5%; height: 1.8%; }
@@ -212,6 +213,7 @@
             }
             .field-input {
                 color: #000 !important;
+                border: none !important;
             }
         }
     </style>
@@ -220,10 +222,10 @@
 
     <div class="action-panel">
         <h2>ATAVA DIGITAL SERVICES & TRADING</h2>
-        <p>Click on the blue colored boxes and type English or Arabic directly.</p>
+        <p>Click inside any text box, then use the buttons to resize its font individually.</p>
         <div class="btn-container">
-            <button class="font-btn" onclick="adjustFontSize(-1)">A- Font Smaller</button>
-            <button class="font-btn" onclick="adjustFontSize(1)">A+ Font Larger</button>
+            <button class="font-btn" onclick="adjustFontSize(-1)">A- Selected Font Smaller</button>
+            <button class="font-btn" onclick="adjustFontSize(1)">A+ Selected Font Larger</button>
             <button class="print-btn" onclick="window.print()">Print Agreement (PDF)</button>
         </div>
     </div>
@@ -327,12 +329,25 @@
     </div>
 
     <script>
+        let activeInput = null;
+
+        // Track active/focused input box
+        document.addEventListener('focusin', function(e) {
+            if (e.target.classList.contains('field-input')) {
+                activeInput = e.target;
+            }
+        });
+
         function adjustFontSize(change) {
-            const inputs = document.querySelectorAll('.field-input');
-            inputs.forEach(input => {
-                const currentSize = parseFloat(window.getComputedStyle(input).fontSize);
-                input.style.fontSize = (currentSize + change) + 'px';
-            });
+            if (activeInput) {
+                const currentSize = parseFloat(window.getComputedStyle(activeInput).fontSize);
+                const newSize = currentSize + change;
+                if (newSize >= 8 && newSize <= 24) {
+                    activeInput.style.fontSize = newSize + 'px';
+                }
+            } else {
+                alert("Please click inside a text box first to select it.");
+            }
         }
     </script>
 </body>
