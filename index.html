@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ATAVA Rental Agreement System</title>
-    <!-- Enhanced Arabic Font Import with Bold weights -->
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Standard Clean Arabic Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -14,7 +16,7 @@
         }
         body {
             background-color: #525659;
-            font-family: Arial, sans-serif;
+            font-family: 'Traditional Arabic', 'Simplified Arabic', 'Amiri', Tahoma, Arial, sans-serif;
             padding: 20px;
             display: flex;
             flex-direction: column;
@@ -32,6 +34,7 @@
             width: 100%;
             max-width: 800px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-family: Arial, sans-serif;
         }
         .action-panel h2 {
             font-size: 18px;
@@ -85,11 +88,12 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.5);
             background-color: #fff;
             
-            /* Enhanced screen display clarity and crisp edges */
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
+            /* Enhanced screen display clarity & crisp font rendering */
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
         }
 
         /* ONLINE BACKGROUND IMAGES */
@@ -100,14 +104,14 @@
             background-image: url('https://atavadigital.github.io/templates/Tenancy_Contract_02.jpg'), url('page2.jpg');
         }
 
-        /* Standard Input Styling inside Document with maximum clarity */
+        /* Standard Input Styling inside Document */
         .field-input {
             position: absolute;
             border: none;
             background: transparent;
-            font-family: 'Amiri', serif;
-            font-size: 13.5px; /* Slightly adjusted default for optimal clarity */
-            font-weight: 700; /* Bold Arabic for maximum sharpness */
+            font-family: 'Traditional Arabic', 'Simplified Arabic', 'Amiri', Tahoma, sans-serif;
+            font-size: 14px;
+            font-weight: bold;
             color: #000000;
             padding: 0 4px;
             outline: none;
@@ -117,7 +121,7 @@
             direction: rtl;
             white-space: nowrap;
             overflow: hidden;
-            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
         }
         .field-input:focus {
             background: rgba(56, 189, 248, 0.25);
@@ -213,6 +217,7 @@
                 page-break-after: always;
                 width: 210mm;
                 height: 297mm;
+                filter: none !important;
             }
             .field-input {
                 color: #000 !important;
@@ -334,7 +339,6 @@
     <script>
         let activeInput = null;
 
-        // Auto Font Auto-fit Logic on Typing
         document.querySelectorAll('.field-input').forEach(input => {
             input.addEventListener('input', function() {
                 autoFitFont(this);
@@ -346,13 +350,12 @@
         });
 
         function autoFitFont(el) {
-            let maxFont = 13.5; // Optimized starting font size
+            let maxFont = 14;
             let minFont = 7;
             let currentSize = maxFont;
 
             el.style.fontSize = currentSize + 'px';
 
-            // Shrink font size if text overflows box width
             while (el.scrollWidth > el.clientWidth && currentSize > minFont) {
                 currentSize -= 0.5;
                 el.style.fontSize = currentSize + 'px';
